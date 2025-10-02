@@ -1,26 +1,53 @@
 import paramiko
+import stat 
 
-def list_files():
+FILE = '/home/cbackus/my_files'
+USERNAME = 'cbackus'
+
+
+#establish SSH & SFTP connection
+def get_sftp():
     hostname = "localhost"
     port = 2222
-    username = ""    #username (not filled for security)
-    key_path = "" #using ssh key (not filled for security)
+    username = USERNAME
+    key_path = "C:/Users/pizza/.ssh/id_ed25519"
 
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    private_key = paramiko.Ed25519Key(filename=key_path)
+    ssh.connect(hostname=hostname, port=port, username=username, pkey=private_key)
+    sftp = ssh.open_sftp()
+    return ssh, sftp
+
+def get_file_list_from_folder(subfolder="my_files"):
     try:
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        private_key = paramiko.Ed25519Key(filename=key_path)
-        ssh.connect(hostname, port=port, username=username, pkey=private_key)
-       
-       
-        #this runs command to lsit all folders in home directory
-        #while connected to wsl 
-        sftp = ssh.open_sftp()
-        file_list = sftp.listdir('/home/' + username)
+        ssh, sftp = get_sftp()
+        remote_path = f"/home/{USERNAME}/{subfolder}"   #note variables from above
+
+        # Only include files, not folders
+        all_items = sftp.listdir_attr(remote_path)
+        files = [f.filename for f in all_items if not stat.S_ISDIR(f.st_mode)]
+
         sftp.close()
         ssh.close()
-        return file_list
+        return files
+    except Exception as e:
+        print(f"Error listing folder: {e}")
+        return []
+    
+
+def list_files():
+   
+    try:
+       ssh, sftp = get_sftp()
+       file_list = sftp.listdir({FILE})
+       
+       #this runs command to list all folders in home directory
+       #while connected to wsl 
+       sftp.close()
+       ssh.close()
+       return file_list
     
     except Exception as e:
-        print(f"Error connecting to WSL: {e}")
-        return []
+       print(f"Error connecting to WSL: {e}")
+       return []
