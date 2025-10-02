@@ -6,5 +6,13 @@
 <body>
     <h1>Project Narnia</h1>
     <p>The dream is ended: this is the morning. </p>
+
+     <h1>Files in WSL Home Directory</h1>
+    <ul>
+    {% for file in files %}
+        <li>{{ file }}</li>
+    {% endfor %}
+    </ul>
+    
 </body>
 </html>
