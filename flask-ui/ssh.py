@@ -1,8 +1,8 @@
 import paramiko
 import stat 
 
-FILE = '/home/cbackus/my_files'
-USERNAME = 'cbackus'
+FILE = '' #redacted
+USERNAME = '' #redacted
 
 
 #establish SSH & SFTP connection
@@ -10,7 +10,7 @@ def get_sftp():
     hostname = "localhost"
     port = 2222
     username = USERNAME
-    key_path = "C:/Users/pizza/.ssh/id_ed25519"
+    key_path = "" #redacted
 
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
