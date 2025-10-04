@@ -130,5 +130,29 @@ def create_folder():
     return redirect(url_for('index', path=current_path))
 
 
+#rename file/folder
+@app.route('/rename', methods=['POST'])
+def rename_item():
+    current_path = request.form.get('current_path', '').strip()
+    old_name = request.form.get('old_name', '').strip()
+    new_name = request.form.get('new_name', '').strip()
+
+    if not old_name or not new_name:
+        return "Old or new name not provided", 400
+
+    old_remote_path = f"/home/{USERNAME}/my_files/{current_path}/{old_name}".replace('//', '/')
+    new_remote_path = f"/home/{USERNAME}/my_files/{current_path}/{new_name}".replace('//', '/')
+
+    try:
+        ssh, sftp = get_sftp()
+        sftp.rename(old_remote_path, new_remote_path)
+        sftp.close()
+        ssh.close()
+        return redirect(url_for('index', path=current_path))
+    except Exception as e:
+        print(f"Rename failed: {e}")
+        return f"Rename failed: {e}", 500
+
+
 if __name__ == '__main__':
     app.run(debug=True)
