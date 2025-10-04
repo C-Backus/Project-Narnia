@@ -69,6 +69,18 @@
             📁 <a href="{{ url_for('index', path=(subpath ~ '/' if subpath else '') ~ folder) }}">
                 {{ folder }}
             </a>
+            
+         <!-- Edit button -->
+        <button type="button" onclick="toggleRename('folder-{{ loop.index }}')">Edit</button>
+        
+        <!-- Hidden rename form -->
+        <form id="folder-{{ loop.index }}" action="{{ url_for('rename_item') }}" method="POST" style="display:none; margin-top:5px;">
+            <input type="hidden" name="current_path" value="{{ subpath }}">
+            <input type="hidden" name="old_name" value="{{ folder }}">
+            <input type="text" name="new_name" placeholder="New name" required>
+            <button type="submit">Rename</button>
+        </form>
+
         </li>
     {% endfor %}
     </ul>
@@ -79,9 +91,34 @@
         <li>
             📄 {{ file }}
             [<a href="{{ url_for('download_file') }}?filename={{ file }}&path={{ subpath }}">Download</a>]
+            
+        <!-- Edit button -->
+        <button type="button" onclick="toggleRename('file-{{ loop.index }}')">Edit</button>
+        
+        <!-- Hidden rename form -->
+        <form id="file-{{ loop.index }}" action="{{ url_for('rename_item') }}" method="POST" style="display:none; margin-top:5px;">
+            <input type="hidden" name="current_path" value="{{ subpath }}">
+            <input type="hidden" name="old_name" value="{{ file }}">
+            <input type="text" name="new_name" placeholder="New name" required>
+            <button type="submit">Rename</button>
+        </form>
+
         </li>
     {% endfor %}
     </ul>
+
+    <!--rename fuction-->
+    <script>
+    function toggleRename(id) {
+        const form = document.getElementById(id);
+        if (!form) return;
+        if (form.style.display === "none") {
+            form.style.display = "inline-block";
+        } else {
+            form.style.display = "none";
+        }
+    }
+    </script>
 
 </body>
 </html>
