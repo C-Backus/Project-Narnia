@@ -16,7 +16,7 @@ DOWNLOAD_FOLDER = ''   #routes directly to user's downloads folder #redacted
 #show file list
 @app.route('/')
 def index():
-    subpath = request.args.get("path", "")  #relative to my_files
+    subpath = request.args.get("path", "")  #folder user is in
 
     try:
         folders, files = get_file_list_from_folder(subfolder=subpath)
@@ -24,11 +24,11 @@ def index():
         print(f"Failed to list directory: {e}")
         return f"Failed to list directory: {e}", 500
 
-    # Compute parent folder path
+    #find parent folder path
     if subpath == "" or subpath == FILE_FOLDER:
-        parent_path = None  # we are at root, no parent
+        parent_path = None  #we are at root
     else:
-        # Remove last component of the path
+        #remove last piece of path
         parent_path = "/".join(subpath.rstrip("/").split("/")[:-1])
 
     return render_template(
@@ -40,30 +40,29 @@ def index():
     )
 
 
-
 #download file
 @app.route('/download')
 def download_file():
     filename = request.args.get('filename')
-    subpath = request.args.get('path', '')  # folder user is in
+    subpath = request.args.get('path', '')  #folder user is in
 
     if not filename:
         return "No file specified", 400
 
-    remote_path = f"/home/{USERNAME}/my_files/{subpath}/{filename}".replace("//", "/")
+    remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{subpath}/{filename}".replace("//", "/")
 
 
     try:
         ssh, sftp = get_sftp()
 
-        # Open file from remote and stream its contents directly
+        #open file from remote & stream its contents directly
         with sftp.open(remote_path, 'rb') as remote_file:
             file_data = remote_file.read()
 
         sftp.close()
         ssh.close()
 
-        # Return file as download without saving locally
+        #return file as download w/o saving locally
         return Response(
             file_data,
             mimetype='application/octet-stream',
@@ -87,12 +86,12 @@ def upload_file():
         return redirect(url_for('index'))
 
     filename = uploaded_file.filename
-    remote_path = f'/home/{USERNAME}/{FILE_FOLDER}/{current_path}/{filename}'.replace('//', '/')  #note variables from above
+    remote_path = f'/home/{USERNAME}/{FILE_FOLDER}/{current_path}/{filename}'.replace('//', '/') 
 
     try:
         ssh, sftp = get_sftp()
       
-        # open remote file and write directly from uploaded file
+        #open remote file & write directly from uploaded file
         with sftp.open(remote_path, 'wb') as remote_file:
             remote_file.write(uploaded_file.read())
 
@@ -113,7 +112,7 @@ def create_folder():
     if not folder_name:
         return "No folder name specified", 400
 
-    # Construct correct full path: /home/USERNAME/FILE_FOLDER[/subpath]/folder_name
+    #make correct full path
     remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{current_path}/{folder_name}".replace('//', '/')
 
     try:
@@ -126,7 +125,7 @@ def create_folder():
         print(f"Failed to create folder: {e}")
         return f"Failed to create folder: {e}", 500
 
-    # Redirect back to the *current* directory
+    #go back to the current directory (not root)
     return redirect(url_for('index', path=current_path))
 
 
