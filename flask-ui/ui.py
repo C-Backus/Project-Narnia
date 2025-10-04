@@ -16,20 +16,29 @@ DOWNLOAD_FOLDER = ''   #routes directly to user's downloads folder #redacted
 #show file list
 @app.route('/')
 def index():
-    subpath = request.args.get("path", "")  # relative to my_files
+    subpath = request.args.get("path", "")  #relative to my_files
 
     try:
-        folders, files = get_file_list_from_folder(subfolder=subpath)  # should return two lists
+        folders, files = get_file_list_from_folder(subfolder=subpath)
     except Exception as e:
         print(f"Failed to list directory: {e}")
         return f"Failed to list directory: {e}", 500
+
+    # Compute parent folder path
+    if subpath == "" or subpath == FILE_FOLDER:
+        parent_path = None  # we are at root, no parent
+    else:
+        # Remove last component of the path
+        parent_path = "/".join(subpath.rstrip("/").split("/")[:-1])
 
     return render_template(
         "index.html",
         folders=folders,
         files=files,
-        subpath=subpath
+        subpath=subpath,
+        parent_path=parent_path
     )
+
 
 
 #download file
