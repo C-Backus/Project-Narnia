@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+
+<!--colors & stuff-->
 <head>
     <title>L-NAS Web UI</title>
     <style>
@@ -44,8 +46,11 @@
 
     
     <!--display files-->
-    <h2>Files in {{ subpath or FILE_FOLDER }}</h2>
     
+   
+    <!-- Current folder display -->
+    <h2>Current folder: {{ subpath or FILE_FOLDER }}</h2>
+
     <!--show parent folder if not in root (my_files)-->
     {% if parent_path is not none %}
     <p>
@@ -53,8 +58,11 @@
     </p>
     {% endif %}
 
-    <!--show folders-->
-    <h3>Folders</h3>
+
+    <!--show contents of current folder-->
+    <h3>Contents:</h3>
+    
+    <h4>Folders</h4>
     <ul>
     {% for folder in folders %}
         <li>
@@ -65,8 +73,7 @@
     {% endfor %}
     </ul>
 
-    <!--show files-->
-    <h3>Files</h3>
+    <h4>Files</h4>
     <ul>
     {% for file in files %}
         <li>
