@@ -19,21 +19,24 @@ def get_sftp():
     sftp = ssh.open_sftp()
     return ssh, sftp
 
-def get_file_list_from_folder(subfolder="my_files"):
+def get_file_list_from_folder(subfolder=""):
     try:
         ssh, sftp = get_sftp()
-        remote_path = f"/home/{USERNAME}/{subfolder}"   #note variables from above
+        base_path = f"/home/{USERNAME}/my_files"
+        remote_path = f"{base_path}/{subfolder}".rstrip('/')
 
-        # Only include files, not folders
         all_items = sftp.listdir_attr(remote_path)
-        files = [f.filename for f in all_items if not stat.S_ISDIR(f.st_mode)]
+
+        # Separate strings for template
+        folders = [f.filename for f in all_items if stat.S_ISDIR(f.st_mode)]
+        files   = [f.filename for f in all_items if stat.S_ISREG(f.st_mode)]
 
         sftp.close()
         ssh.close()
-        return files
+        return folders, files
     except Exception as e:
         print(f"Error listing folder: {e}")
-        return []
+        return [], []
     
 
 def list_files():
