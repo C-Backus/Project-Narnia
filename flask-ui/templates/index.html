@@ -45,9 +45,6 @@
     </form>
 
     
-    <!--display files-->
-    
-   
     <!-- Current folder display -->
     <h2>Current folder: {{ subpath or FILE_FOLDER }}</h2>
 
@@ -70,10 +67,10 @@
                 {{ folder }}
             </a>
             
-         <!-- Edit button -->
+         <!--edit button-->
         <button type="button" onclick="toggleRename('folder-{{ loop.index }}')">Edit</button>
         
-        <!-- Hidden rename form -->
+        <!--hidden rename form-->
         <form id="folder-{{ loop.index }}" action="{{ url_for('rename_item') }}" method="POST" style="display:none; margin-top:5px;">
             <input type="hidden" name="current_path" value="{{ subpath }}">
             <input type="hidden" name="old_name" value="{{ folder }}">
@@ -92,10 +89,10 @@
             📄 {{ file }}
             [<a href="{{ url_for('download_file') }}?filename={{ file }}&path={{ subpath }}">Download</a>]
             
-        <!-- Edit button -->
+        <!--edit button-->
         <button type="button" onclick="toggleRename('file-{{ loop.index }}')">Edit</button>
         
-        <!-- Hidden rename form -->
+        <!--hidden rename form-->
         <form id="file-{{ loop.index }}" action="{{ url_for('rename_item') }}" method="POST" style="display:none; margin-top:5px;">
             <input type="hidden" name="current_path" value="{{ subpath }}">
             <input type="hidden" name="old_name" value="{{ file }}">
