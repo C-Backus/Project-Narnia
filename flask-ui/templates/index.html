@@ -29,7 +29,15 @@
     
     <!--display files-->
     <h2>Files in {{ subpath or FILE_FOLDER }}</h2>
+    
+    <!--show parent folder if not in root (my_files)-->
+    {% if parent_path is not none %}
+    <p>
+        <a href="{{ url_for('index', path=parent_path) }}">⬆ Go to parent folder</a>
+    </p>
+    {% endif %}
 
+    <!--show folders-->
     <h3>Folders</h3>
     <ul>
     {% for folder in folders %}
@@ -41,6 +49,7 @@
     {% endfor %}
     </ul>
 
+    <!--show files-->
     <h3>Files</h3>
     <ul>
     {% for file in files %}
