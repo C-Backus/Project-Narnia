@@ -2,7 +2,7 @@ import os
 import paramiko
 import stat
 from flask import Flask, render_template, request, send_file, redirect, url_for, Response
-from ssh import list_files, get_file_list_from_folder, get_sftp
+from ssh import get_files_and_folders, get_sftp
 
 app = Flask(__name__)
 #UPLOAD_FOLDER = 'uploads'       not working
@@ -19,7 +19,7 @@ def index():
     subpath = request.args.get("path", "")  #folder user is in
 
     try:
-        folders, files = get_file_list_from_folder(subfolder=subpath)
+        folders, files = get_files_and_folders(subfolder=subpath)
     except Exception as e:
         print(f"Failed to list directory: {e}")
         return f"Failed to list directory: {e}", 500    #server error
