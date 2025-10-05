@@ -1,7 +1,7 @@
 import os
 import paramiko
 import stat
-from flask import Flask, render_template, request, send_file, redirect, url_for, Response
+from flask import Flask, render_template, request, redirect, url_for, Response
 from ssh import get_files_and_folders, get_sftp
 
 app = Flask(__name__)
