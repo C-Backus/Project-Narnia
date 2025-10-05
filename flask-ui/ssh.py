@@ -22,7 +22,7 @@ def get_sftp():
 def get_file_list_from_folder(subfolder=""):
     try:
         ssh, sftp = get_sftp()
-        base_path = f"/home/{USERNAME}/my_files"
+        base_path = FILE    #make whatever root folder is
         remote_path = f"{base_path}/{subfolder}".rstrip('/')
 
         all_items = sftp.listdir_attr(remote_path)
