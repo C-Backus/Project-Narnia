@@ -22,7 +22,7 @@ def index():
         folders, files = get_file_list_from_folder(subfolder=subpath)
     except Exception as e:
         print(f"Failed to list directory: {e}")
-        return f"Failed to list directory: {e}", 500
+        return f"Failed to list directory: {e}", 500    #server error
 
     #find parent folder path
     if subpath == "" or subpath == FILE_FOLDER:
@@ -47,7 +47,7 @@ def download_file():
     subpath = request.args.get('path', '')  #folder user is in
 
     if not filename:
-        return "No file specified", 400
+        return "No file specified", 400     #client error
 
     remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{subpath}/{filename}".replace("//", "/")
 
@@ -73,7 +73,7 @@ def download_file():
 
     except Exception as e:
         print(f"Download failed: {e}")
-        return f"Download failed: {e}", 500
+        return f"Download failed: {e}", 500    #server error
     
 
 #upload file
@@ -100,7 +100,7 @@ def upload_file():
         return redirect(url_for('index', path=current_path))
     except Exception as e:
         print(f"Upload failed: {e}")
-        return f"Upload failed: {e}", 500
+        return f"Upload failed: {e}", 500    #server error
 
 
 #create folder
@@ -110,7 +110,7 @@ def create_folder():
     current_path = request.form.get('current_path', '')  #make sure this matches HTML hidden input in create a new folder!
 
     if not folder_name:
-        return "No folder name specified", 400
+        return "No folder name specified", 400     #client error
 
     #make correct full path
     remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{current_path}/{folder_name}".replace('//', '/')
@@ -123,7 +123,7 @@ def create_folder():
         print(f"Created folder: {remote_path}")
     except Exception as e:
         print(f"Failed to create folder: {e}")
-        return f"Failed to create folder: {e}", 500
+        return f"Failed to create folder: {e}", 500    #server error
 
     #go back to the current directory (not root)
     return redirect(url_for('index', path=current_path))
@@ -137,7 +137,7 @@ def rename_item():
     new_name = request.form.get('new_name', '').strip()
 
     if not old_name or not new_name:
-        return "Old or new name not provided", 400
+        return "Old or new name not provided", 400     #client error
 
     old_remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{current_path}/{old_name}".replace('//', '/')
     new_remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{current_path}/{new_name}".replace('//', '/')
@@ -150,7 +150,7 @@ def rename_item():
         return redirect(url_for('index', path=current_path))
     except Exception as e:
         print(f"Rename failed: {e}")
-        return f"Rename failed: {e}", 500
+        return f"Rename failed: {e}", 500    #server error
 
 
 if __name__ == '__main__':
