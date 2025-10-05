@@ -139,8 +139,8 @@ def rename_item():
     if not old_name or not new_name:
         return "Old or new name not provided", 400
 
-    old_remote_path = f"/home/{USERNAME}/my_files/{current_path}/{old_name}".replace('//', '/')
-    new_remote_path = f"/home/{USERNAME}/my_files/{current_path}/{new_name}".replace('//', '/')
+    old_remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{current_path}/{old_name}".replace('//', '/')
+    new_remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{current_path}/{new_name}".replace('//', '/')
 
     try:
         ssh, sftp = get_sftp()
