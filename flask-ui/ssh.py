@@ -1,5 +1,5 @@
-import paramiko
-import stat 
+import paramiko, stat 
+from flask import session
 
 FILE = '/home/cbackus/my_files'
 USERNAME = 'cbackus'
@@ -21,11 +21,19 @@ def get_sftp():
 
 
 #returns lists of files and folders in directory
-def get_files_and_folders(subfolder=""):
+def get_files_and_folders(subfolder=''):
     try:
         ssh, sftp = get_sftp()
         base_path = FILE    #make whatever root folder is
-        remote_path = f"{base_path}/{subfolder}".rstrip('/')
+        remote_path = f'{base_path}/{subfolder}'.rstrip('/')
+
+        #reads user from session for use in path creation for file/folder lists
+        user = session.get('user', None)
+        if not user:
+            raise Exception('Not logged in')
+        
+        user_path = f'{base_path}/{user}'
+        remote_path = f'{base_path}/{subfolder}'.rstrip('/')
 
         all_items = sftp.listdir_attr(remote_path)
 
@@ -37,5 +45,5 @@ def get_files_and_folders(subfolder=""):
         ssh.close()
         return folders, files
     except Exception as e:
-        print(f"Error listing folder: {e}")
+        print(f'Error listing folder: {e}')
         return [], []
