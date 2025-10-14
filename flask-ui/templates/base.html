@@ -1,0 +1,53 @@
+<!--template for page inheritance-->
+
+<!DOCTYPE html>
+<html>
+
+    <!--colors & stuff-->
+    <head>
+        <title>L-NAS Web UI</title>
+        <style>
+            body {
+                background-color: darkslategray; 
+                
+            }
+            h1, h2, h3 {
+                color: white;
+            }
+            a {
+                color: black;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+
+    
+    <body>
+
+    <!--header bar-->
+    <div>
+        <a href="/">Home</a>
+        <a href="/login">Login</a>
+    </div>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        
+        <!--index.html & login.html fit in here-->
+        {% block content %}
+        {% endblock %}
+    </body>
+
+
+
+</html>
