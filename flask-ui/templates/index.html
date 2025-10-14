@@ -1,28 +1,8 @@
-<!DOCTYPE html>
-<html>
+<!--user functionality page-->
 
-<!--colors & stuff-->
-<head>
-    <title>L-NAS Web UI</title>
-    <style>
-        body {
-            background-color: darkslategray; 
-            
-        }
-        h1, h2, h3 {
-            color: white;
-        }
-        a {
-            color: black;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
 
+{% block content %}
     <!--header-->
     <h1>L-NAS</h1>
     
@@ -117,5 +97,4 @@
     }
     </script>
 
-</body>
-</html>
+{% endblock %}
