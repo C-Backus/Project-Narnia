@@ -1,16 +1,30 @@
 import os
 import paramiko
 import stat
-from flask import Flask, render_template, request, redirect, url_for, Response
+from flask import Flask, render_template, request, redirect, url_for, Response, flash
 from ssh import get_files_and_folders, get_sftp
+from forms import LoginForm
+
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'BEEFDEAD'           #allows accss to login page ((needs to be more secure later))
+
 #UPLOAD_FOLDER = 'uploads'       not working
 #os.makedirs(UPLOAD_FOLDER, exist_ok=True)  #make uploads folder if not there
 
 FILE_FOLDER = 'my_files'
 USERNAME = '' #redacted
 DOWNLOAD_FOLDER = ''   #routes directly to user's downloads folder #redacted
+
+#login
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        flash('Hello, {}'.format(form.username.data))     #Sshows on home page when user logs in
+        return redirect('/')
+
+    return render_template('login.html', title= 'Sign In', form=form)
 
 
 #show file list
