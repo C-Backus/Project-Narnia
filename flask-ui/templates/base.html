@@ -31,6 +31,7 @@
     <div>
         <a href="/">Home</a>
         <a href="/login">Login</a>
+        <a href="/logout">Logout</a>
     </div>
 
         {% with messages = get_flashed_messages() %}
@@ -42,7 +43,7 @@
         </ul>
         {% endif %}
         {% endwith %}
-        
+
         <!--index.html & login.html fit in here-->
         {% block content %}
         {% endblock %}
