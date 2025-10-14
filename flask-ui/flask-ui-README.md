@@ -16,7 +16,7 @@ Ensure you have Conda version 25.5.1 installed on your machine.
 
 Create a conda environment as Python version 3.10.18 and activate.
 
-Within this environment, pip install flask, gunicorn and paramiko.
+Within this environment, pip install flask, gunicorn and paramiko, and flask-wtf.
 
 Still within this environment, change directory to the location of the downloaded "flask-ui" folder.
 
