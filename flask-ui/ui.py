@@ -63,33 +63,38 @@ def login():
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
 
+        if username == 'admin':
+            user_folder = f'/home/{USERNAME}/{FILE_FOLDER}'
+        else:  
+            user_folder = f'/home/{USERNAME}/{FILE_FOLDER}/{username}'
+
         #if new user, store username and generated password hash in json file, create user folder
         if username not in users:
             users[username] = generate_password_hash(password)
             save_users(users)
 
-            user_folder = f'/home/{USERNAME}/{FILE_FOLDER}/{username}'
-            try:
-                ssh, sftp = get_sftp()
-                sftp.mkdir(user_folder)
-                sftp.close()
-                ssh.close()
-                print(f"Created folder: {user_folder}")
-
-                #user validated, show index
-                session['user'] = username
-                if form.validate_on_submit():
-                    flash('Hello, {}'.format(form.username.data))     #shows on home page when user logs in
-                    return redirect(url_for('index'))
+            #if not initial admin creation, create folder
+            if username != 'admin':
+                try:
+                    ssh, sftp = get_sftp()
+                    sftp.mkdir(user_folder)
+                    sftp.close()
+                    ssh.close()
+                    print(f"Created folder: {user_folder}")
             
-            except Exception as e:
-                print(f"Failed to create folder: {e}")
-                return f"Failed to create folder: {e}", 500    #server error
+                except Exception as e:
+                    print(f"Failed to create folder: {e}")
+                    return f"Failed to create folder: {e}", 500    #server error
+            
+
+        #user validated, show index
+        session['user'] = username
+        if form.validate_on_submit():
+            return redirect(url_for('index'))
             
         #if user in json file, check password
         if check_password_hash(users[username], password):
             session['user'] = username
-            flash('Hello, {}'.format(form.username.data))
             return redirect(url_for('index'))
         else:
             return 'Invalid password', 400  #client error
@@ -113,7 +118,12 @@ def index():
     user = session['user']
 
     subpath = request.args.get("path", "")  #folder user is in
-    user_path = f'{user}/{subpath}'.strip('/')
+
+    #if admin cut out user folder, else user folder
+    if user == 'admin':
+        user_path = f'{subpath}'.strip('/')
+    else:
+        user_path = f'{user}/{subpath}'.strip('/')
 
     try:
         folders, files = get_files_and_folders(subfolder=user_path)
@@ -133,7 +143,8 @@ def index():
         folders=folders,
         files=files,
         subpath=subpath,
-        parent_path=parent_path
+        parent_path=parent_path,
+        user=user
     )
 
 
@@ -153,7 +164,13 @@ def download_file():
     if not filename:
         return "No file specified", 400     #client error
 
-    remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{user}/{subpath}/{filename}".replace("//", "/")
+    #if admin cut out user folder, else user folder
+    if user == 'admin':
+        remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{subpath}/{filename}".replace("//", "/")
+    else:
+        remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{user}/{subpath}/{filename}".replace("//", "/")
+
+    
 
 
     try:
@@ -197,7 +214,13 @@ def upload_file():
         return redirect(url_for('index'))
 
     filename = uploaded_file.filename
-    remote_path = f'/home/{USERNAME}/{FILE_FOLDER}/{user}/{current_path}/{filename}'.replace('//', '/') 
+
+    #if admin cut out user folder, else user folder
+    if user == 'admin':
+        remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{current_path}/{filename}".replace("//", "/")
+    else:
+        remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{user}/{current_path}/{filename}".replace("//", "/")
+
 
     try:
         ssh, sftp = get_sftp()
@@ -230,8 +253,12 @@ def create_folder():
     if not folder_name:
         return "No folder name specified", 400     #client error
 
-    #make correct full path
-    remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{user}/{current_path}/{folder_name}".replace('//', '/')
+    #if admin cut out user folder, else user folder
+    if user == 'admin':
+        remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{current_path}/{folder_name}".replace("//", "/")
+    else:
+        remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{user}/{current_path}/{folder_name}".replace("//", "/")
+
 
     try:
         ssh, sftp = get_sftp()
@@ -263,9 +290,16 @@ def rename_item():
 
     if not old_name or not new_name:
         return "Old or new name not provided", 400     #client error
+    
+    #if admin cut out user folder, else user folder
+    if user == 'admin':
+        old_remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{current_path}/{old_name}".replace('//', '/')
+        new_remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{current_path}/{new_name}".replace('//', '/')
 
-    old_remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{user}/{current_path}/{old_name}".replace('//', '/')
-    new_remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{user}/{current_path}/{new_name}".replace('//', '/')
+    else:
+        old_remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{user}/{current_path}/{old_name}".replace('//', '/')
+        new_remote_path = f"/home/{USERNAME}/{FILE_FOLDER}/{user}/{current_path}/{new_name}".replace('//', '/')
+
 
     try:
         ssh, sftp = get_sftp()
@@ -280,3 +314,4 @@ def rename_item():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
