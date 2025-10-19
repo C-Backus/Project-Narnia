@@ -34,16 +34,6 @@
         <a href="/logout">Logout</a>
     </div>
 
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-
         <!--index.html & login.html fit in here-->
         {% block content %}
         {% endblock %}
