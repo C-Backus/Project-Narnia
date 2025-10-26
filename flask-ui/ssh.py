@@ -1,21 +1,21 @@
 import paramiko, stat 
 from flask import session
 
-FILE = '/home/cbackus/my_files'
+FILE = '/home/'
 USERNAME = 'cbackus'
 
 
 #establish SSH & SFTP connection
-def get_sftp():
-    hostname = "localhost"
+def get_sftp(username=USERNAME):
+    host_name = 'localhost'
     port = 2222
-    username = USERNAME
-    key_path = "C:/Users/pizza/.ssh/id_ed25519"
+    username = username
+    key_path = 'C:/Users/pizza/.ssh/id_ed25519'
 
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     private_key = paramiko.Ed25519Key(filename=key_path)
-    ssh.connect(hostname=hostname, port=port, username=username, pkey=private_key)
+    ssh.connect(hostname=host_name, port=port, username=username, pkey=private_key)
     sftp = ssh.open_sftp()
     return ssh, sftp
 
@@ -32,7 +32,6 @@ def get_files_and_folders(subfolder=''):
         if not user:
             raise Exception('Not logged in')
         
-        user_path = f'{base_path}/{user}'
         remote_path = f'{base_path}/{subfolder}'.rstrip('/')
 
         all_items = sftp.listdir_attr(remote_path)
