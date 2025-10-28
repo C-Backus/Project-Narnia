@@ -63,7 +63,6 @@ def login():
         #if user in json file, check password
         if check_password_hash(users[username], password):
             session['user'] = username
-            flash('Hello, {}'.format(form.username.data))
             return redirect(url_for('index'))
         else:
             return 'Invalid password', 400  #client error
