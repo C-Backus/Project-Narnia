@@ -187,10 +187,12 @@ def upload_file():
 
         sftp.close()
         ssh.close()
-        return redirect(url_for('index', path=current_path))
+        
     except Exception as e:
         print(f'Upload failed: {e}')
         return f'Upload failed: {e}', 500    #server error
+    
+    return redirect(url_for('index', path=current_path))
 
 
 #create folder
@@ -254,11 +256,12 @@ def rename_item():
         sftp.rename(old_remote_path, new_remote_path)
         sftp.close()
         ssh.close()
-        return redirect(url_for('index', path=current_path))
+        
     except Exception as e:
         print(f'Rename failed: {e}')
         return f'Rename failed: {e}', 500    #server error
     
+    return redirect(url_for('index', path=current_path))
 
 #delete file or folder
 @app.route('/delete_item', methods=['POST'])
@@ -299,8 +302,6 @@ def delete_item():
     ssh.close()
     return redirect(url_for('index', path=current_path))
     
-
-
-
+    
 if __name__ == '__main__':
     app.run(debug=True)
