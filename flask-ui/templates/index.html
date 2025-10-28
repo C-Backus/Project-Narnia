@@ -50,6 +50,14 @@
             
          <!--edit button-->
         <button type="button" onclick="toggleRename('folder-{{ loop.index }}')">Edit</button>
+
+        <!--delete button-->
+        <form action="{{ url_for('delete_item') }}" method="POST">
+            <input type="hidden" name="current_path" value="{{ subpath }}">
+            <input type="hidden" name="filefolder" value="{{ folder }}"> <!-- make sure name matches name in delete_item in ui.py!-->
+            <button type="submit">Delete</button>
+        </form>
+
         
         <!--hidden rename form-->
         <form id="folder-{{ loop.index }}" action="{{ url_for('rename_item') }}" method="POST" style="display:none; margin-top:5px;">
@@ -68,10 +76,21 @@
     {% for file in files %}
         <li>
             📄 {{ file }}
-            [<a href="{{ url_for('download_file') }}?filename={{ file }}&path={{ subpath }}">Download</a>]
+            <form action="{{ url_for('download_file') }}" method="get" style="display:inline;">
+                <input type="hidden" name="filename" value="{{ file }}">
+                <input type="hidden" name="path" value="{{ subpath }}">
+                <button type="submit">Download</button>
+            </form>
             
         <!--edit button-->
         <button type="button" onclick="toggleRename('file-{{ loop.index }}')">Edit</button>
+
+         <!--delete button-->
+        <form action="{{ url_for('delete_item') }}" method="POST">
+            <input type="hidden" name="current_path" value="{{ subpath }}">
+            <input type="hidden" name="filefolder" value="{{ file }}"> <!-- make sure name matches name in delete_item in ui.py!-->
+            <button type="submit">Delete</button>
+        </form>
         
         <!--hidden rename form-->
         <form id="file-{{ loop.index }}" action="{{ url_for('rename_item') }}" method="POST" style="display:none; margin-top:5px;">
