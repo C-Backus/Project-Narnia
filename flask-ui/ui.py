@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'BEEFDEAD'           #allows accss to login page ((needs to be more secure later))
+app.config['SECRET_KEY'] = ''           #allows accss to login page ((needs to be more secure later))
 
 #UPLOAD_FOLDER = 'uploads'       not working
 #os.makedirs(UPLOAD_FOLDER, exist_ok=True)  #make uploads folder if not there
