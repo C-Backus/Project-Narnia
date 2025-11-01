@@ -14,7 +14,7 @@ Ensure you have VS Code installed on your machine.
 
 Ensure you have Conda version 25.5.1 installed on your machine.
 
-Via command line interface, do the following:
+Via command line interface (CLI), do the following:
 
 Create a conda environment as Python version 3.10.18 and activate.
 
@@ -26,7 +26,7 @@ With VS Code, open and edit the ssh.py file to add a path for the global variabl
 
 Edit the variable "key_path" in the function get_sftp() to reflect the path you wrote down.
 
-Via command line interface, run the command "python ui.py" (remove quotations)
+Via CLI, run the command "python ui.py" (remove quotations)
 
 Access the link generated in the command window.
 
