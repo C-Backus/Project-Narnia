@@ -4,7 +4,7 @@ Currently SSH'ing into my WSL on local network. Will work core functionality her
 
 # Installation Guide
 
-In order to run program, please confirm or install the following:
+### In order to run program, please confirm or install the following:
 
 Generate an ssh key on the device you wish to connect to. Write the path down for further use. 
 
