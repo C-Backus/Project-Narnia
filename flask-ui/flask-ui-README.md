@@ -1,6 +1,5 @@
 Currently SSH'ing into my WSL on local network. Will work core functionality here until NAS hardware stood up.
 <br />
-<br />
 
 # Installation Guide
 
@@ -32,7 +31,6 @@ Access the link generated in the command window.
 
 If shutting down system is desired, press Ctrl+c in the CLI window that the program is running in. All data will be saved. NOTE: if there is a currently logged in user when this occurs, the logged in user will remain logged in upon next execution of the code!
 
-<br />
 <br />
 
 ## Developer Documentation
