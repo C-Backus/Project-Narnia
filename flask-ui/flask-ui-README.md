@@ -2,7 +2,7 @@ Currently SSH'ing into my WSL on local network. Will work core functionality her
 <br />
 <br />
 
-#Installation Guide
+# Installation Guide
 
 In order to run program, please confirm or install the following:
 
@@ -35,7 +35,7 @@ If shutting down system is desired, press Ctrl+c in the CLI window that the prog
 <br />
 <br />
 
-##Developer Documentation
+## Developer Documentation
 
 The intent of this software is to make this a modular program that will execute on any machine with minimal changes in the code.
 
