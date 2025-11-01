@@ -29,12 +29,14 @@ Via CLI, run the command "python ui.py" (remove quotations)
 
 Access the link generated in the command window.
 
-If shutting down system is desired, press Ctrl+c in the CLI window that the program is running in. All data will be saved. NOTE: if there is a currently logged in user when this occurs, the logged in user will remain logged in upon next execution of the code!
+If shutting down system is desired, press Ctrl+c in the CLI window that the program is running in. All data will be saved. **NOTE**: if there is a currently logged in user when this occurs, the logged in user will *remain logged in upon next execution of the code!*
 
 <br />
 
 ## Developer Documentation
 
 The intent of this software is to make this a modular program that will execute on any machine with minimal changes in the code.
+
+Each user and password must be created on the Server. This will allow the user machine to connect to the Server with the ssh function and properly display the user's folder architecture.
 
 Variables are snake_case, constants are SCREAMING_SNAKE_CASE
