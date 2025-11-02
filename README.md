@@ -15,7 +15,11 @@ Due to the nature of the system as whole, it is up to the end-user to supply the
 
 ## Installation Guide
 
+### On server machine
+
 *Insert Linux server requirements here*
+
+### On access machine(s)
 
 Download the folder "flask-ui" and place in easy to access directory on your machine.
 
