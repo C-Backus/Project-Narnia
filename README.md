@@ -35,7 +35,7 @@ Within this environment, pip install flask, gunicorn and paramiko, and flask-wtf
 
 Still within this environment, change directory to the location of the downloaded "flask-ui" folder.
 
-With VS Code, open and edit the ~ssh.py~ utils.py file to add a path for the global variables ~"FILE_FOLDER" and "USER_FOLDER"~ *update for final release* such that they match what is on the device you wish to connect to.
+With VS Code, open and edit the ~ssh.py~ utils.py file to add a path for the global variables IP_ADDRESS to reflect the IP address of the server machine,  ~"FILE_FOLDER" and "USER_FOLDER"~ *update for final release* .
 
 Via CLI, run the command "python ui.py" (remove quotations)
 
