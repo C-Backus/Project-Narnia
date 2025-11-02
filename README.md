@@ -13,8 +13,41 @@ Free: VS Code
 Due to the nature of the system as whole, it is up to the end-user to supply their own server hardware and access machines. There are no baseline specifications to run this software, however, it is reccomended that the server hardware be SSD storage devices and include a minimum 8 GB of RAM, and the access machines should be robust enough to execute moderate intensity programs. 
 
 
-## Please follow steps below in order to run software
+## Installation Guide
 
 *Insert Linux server requirements here*
 
-*Insert access machine (Python) requirements here*
+Download the folder "flask-ui" and place in easy to access directory on your machine.
+
+Ensure you have VS Code installed on your machine.
+
+Ensure you have Conda version 25.5.1 installed on your machine.
+
+Via command line interface (CLI), do the following:
+
+Create a conda environment as Python version 3.10.18 and activate.
+
+Within this environment, pip install flask, gunicorn and paramiko, and flask-wtf.
+
+Still within this environment, change directory to the location of the downloaded "flask-ui" folder.
+
+With VS Code, open and edit the ~ssh.py~ utils.py file to add a path for the global variables ~"FILE_FOLDER" and "USER_FOLDER"~ *update for final release* such that they match what is on the device you wish to connect to.
+
+Via CLI, run the command "python ui.py" (remove quotations)
+
+Access the link generated in the command window.
+
+Log in using username and password created on the server. 
+
+If shutting down system is desired, press Ctrl+c in the CLI window that the program is running in. All data will be saved. **NOTE**: if there is user logged in when this occurs, the logged in user will *remain logged in upon next execution of the code!*
+
+<br />
+
+## Developer Documentation
+
+The intent of this software is to make this a modular program that will execute on any machine with minimal changes in the code.
+
+Each user and password must be created on the server. This will allow the user machine to connect to the server with the ssh function and properly display the user's folder architecture.
+
+Variables are snake_case, constants are SCREAMING_SNAKE_CASE
+
