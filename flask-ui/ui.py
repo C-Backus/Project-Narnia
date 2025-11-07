@@ -1,72 +1,44 @@
-'''
-currently set up for /home/username folder view (not my_files) using username@localhost login style.
-get_sftp() used w/o params in user_list and save_users (default param is USERNAME),
-username variable sent in call in other funcs, works with cbackus as actively logging in user.
-
-need from server: where are user passwords stored
-How to create new users?
-
-
-working on delete folder/file func
-'''
-
-import os, paramiko, stat, json
+import os, paramiko, stat
 from flask import Flask, render_template, request, redirect, url_for, Response, session
-from ssh import get_files_and_folders, get_sftp
+from utils import get_files_and_folders, get_sftp
 from forms import LoginForm
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = ''           #allows accss to login page ((needs to be more secure later))
+app.config['SECRET_KEY'] = 'BEEFDEAD'           #allows accss to login page ((needs to be more secure later))
 
-FILE_FOLDER = '' #redacted
-USERNAME = '' #redacted
-DOWNLOAD_FOLDER = ''   #routes directly to user's downloads folder #redacted
-USER_PASS_FILE = f''    #user/password file #redacted
+ROOT_FILE = '/upload'   #every user has an upload file, separated by ssh login
+DOWNLOAD_FOLDER = 'C:/Users/pizza/Downloads/'   #route to desired folder for downloads
 
 
 #login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
-    users = user_list()
     form = LoginForm()
-
-    #retrieve username and password
+    
     if request.method == 'POST':
+
+        #get username & password then send to ssh
         username = request.form.get('username').strip()
         password = request.form.get('password').strip()
 
-        #if new user, store username and generated password hash in json file, create user folder
-        if username not in users:
-            users[username] = generate_password_hash(password)
-            save_users(users)
+        try:
+            ssh, sftp = get_sftp(username, password)
+            if form.validate_on_submit():
 
-            user_folder = f'/home/{SERVER_NAME}/{username}'
-            try:
-                ssh, sftp = get_sftp(username)
-                sftp.mkdir(user_folder)
+                #save user & password in session for further use
+                session['user'] = username
+                session['password'] = password
                 sftp.close()
                 ssh.close()
-                print(f'Created folder: {user_folder}')
-
-                #user validated, show index
-                session['user'] = username
-                if form.validate_on_submit():
-                    return redirect(url_for('index'))
+                return redirect(url_for('index'))
             
-            except Exception as e:
-                print(f'Failed to create folder: {e}')
-                return f'Failed to create folder: {e}', 500    #server error
-            
-        #if user in json file, check password
-        if check_password_hash(users[username], password):
-            session['user'] = username
-            return redirect(url_for('index'))
-        else:
-            return 'Invalid password', 400  #client error
-            
+        except Exception as e:
+            print(f'Failed to login: {e}')
+            return f'Failed to login: {e}', 500 
+        
     return render_template('login.html', form=form)
 
 
@@ -86,12 +58,13 @@ def index():
         return redirect(url_for('login'))
     
     user = session['user']
+    password = session['password']
 
     subpath = request.args.get('path', '')  #folder user is in
     user_path = f'{subpath}'.strip('/')
 
     try:
-        folders, files = get_files_and_folders(user_path)
+        folders, files = get_files_and_folders(user, password, user_path)
         
     except Exception as e:
         print(f'Failed to list directory: {e}')
@@ -123,6 +96,7 @@ def download_file():
         return redirect(url_for('login'))
     
     username = session['user']
+    password = session['password']
 
     filename = request.args.get('filename')
     path = request.args.get('path', '')  #folder user is in
@@ -131,10 +105,10 @@ def download_file():
         return 'No file specified', 400     #client error
 
     #user folder path
-    remote_path = f'/home/{username}/{path}/{filename}'.replace('//', '/')
+    remote_path = f'{ROOT_FILE}/{path}/{filename}'.replace('//', '/')
 
     try:
-        ssh, sftp = get_sftp(username)
+        ssh, sftp = get_sftp(username, password)
 
         #open file from remote & stream its contents directly
         with sftp.open(remote_path, 'rb') as remote_file:
@@ -166,6 +140,7 @@ def upload_file():
         return redirect(url_for('login'))
     
     username = session['user']
+    password = session['password']
 
     uploaded_file = request.files['file']
     current_path = request.form.get('current_path', '').strip()  #make sure this matches HTML hidden input in upload file!
@@ -176,10 +151,10 @@ def upload_file():
     filename = uploaded_file.filename
 
     #user folder path
-    remote_path = f'/home/{username}/{current_path}/{filename}'.replace('//', '/')
+    remote_path = f'{ROOT_FILE}/{current_path}/{filename}'.replace('//', '/')
 
     try:
-        ssh, sftp = get_sftp(username)
+        ssh, sftp = get_sftp(username, password)
       
         #open remote file & write directly from uploaded file
         with sftp.open(remote_path, 'wb') as remote_file:
@@ -204,6 +179,7 @@ def create_folder():
         return redirect(url_for('login'))
     
     username = session['user']
+    password = session['password']
 
     folder_name = request.form.get('folder_name')
     current_path = request.form.get('current_path', '')  #make sure this matches HTML hidden input in create a new folder!
@@ -212,15 +188,16 @@ def create_folder():
         return 'No folder name specified', 400     #client error
 
     #user folder path
-    remote_path = f'/home/{username}/{current_path}/{folder_name}'.replace('//', '/')
+    remote_path = f'{ROOT_FILE}/{current_path}/{folder_name}'.replace('//', '/')
 
 
     try:
-        ssh, sftp = get_sftp(username)
+        ssh, sftp = get_sftp(username, password)
         sftp.mkdir(remote_path)
         ssh.close()
         sftp.close()
         print(f'Created folder: {remote_path}')
+
     except Exception as e:
         print(f'Failed to create folder: {e}')
         return f'Failed to create folder: {e}', 500    #server error
@@ -238,6 +215,7 @@ def rename_item():
         return redirect(url_for('login'))
     
     username = session['user']
+    password = session['password']
 
     current_path = request.form.get('current_path', '').strip()
     old_name = request.form.get('old_name', '').strip()
@@ -247,12 +225,12 @@ def rename_item():
         return 'Old or new name not provided', 400     #client error
     
     #old & new user folder 
-    old_remote_path = f'/home/{username}/{current_path}/{old_name}'.replace('//', '/')
-    new_remote_path = f'/home/{username}/{current_path}/{new_name}'.replace('//', '/')
+    old_remote_path = f'{ROOT_FILE}/{current_path}/{old_name}'.replace('//', '/')
+    new_remote_path = f'{ROOT_FILE}/{current_path}/{new_name}'.replace('//', '/')
 
 
     try:
-        ssh, sftp = get_sftp(username)
+        ssh, sftp = get_sftp(username, password)
         sftp.rename(old_remote_path, new_remote_path)
         sftp.close()
         ssh.close()
@@ -263,6 +241,8 @@ def rename_item():
     
     return redirect(url_for('index', path=current_path))
 
+
+'''doesnt delete folders with contents'''
 #delete file or folder
 @app.route('/delete_item', methods=['POST'])
 def delete_item():
@@ -272,14 +252,15 @@ def delete_item():
         return redirect(url_for('login'))
     
     username = session['user']
+    password = session['password']
     
     current_path = request.form.get('current_path', '').strip()
     filefolder = request.form.get('filefolder', '').strip()
     
-    remote_path = f'/home/{username}/{current_path}/{filefolder}'.replace('//', '/')
+    remote_path = f'{ROOT_FILE}/{current_path}/{filefolder}'.replace('//', '/')
     
     try:
-        ssh, sftp = get_sftp(username)  
+        ssh, sftp = get_sftp(username, password)  
         remote_path_type = sftp.stat(remote_path)
 
         #check if path is folder or file & not hidden then remove
@@ -293,7 +274,6 @@ def delete_item():
             else:
                 print('Delete refused: folder has contents')
            
-           
     except Exception as e:
         print(f'Remove failed: {e}')
         return f'Remove failed: {e}', 500    #server error
@@ -302,6 +282,6 @@ def delete_item():
     ssh.close()
     return redirect(url_for('index', path=current_path))
     
-    
+
 if __name__ == '__main__':
     app.run(debug=True)
