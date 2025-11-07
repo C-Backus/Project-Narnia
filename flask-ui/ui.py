@@ -6,10 +6,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'BEEFDEAD'           #allows accss to login page ((needs to be more secure later))
+app.config['SECRET_KEY'] = ''           #allows accss to login page ((needs to be more secure later))
 
 ROOT_FILE = '/upload'   #every user has an upload file, separated by ssh login
-DOWNLOAD_FOLDER = 'C:/Users/pizza/Downloads/'   #route to desired folder for downloads
+DOWNLOAD_FOLDER = ''   #route to desired folder for downloads
 
 
 #login
