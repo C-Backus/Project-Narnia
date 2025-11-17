@@ -31,11 +31,13 @@ Via command line interface (CLI), do the following:
 
 Create a conda environment as Python version 3.10.18 and activate.
 
-Within this environment, pip install flask, gunicorn and paramiko, and flask-wtf.
+Within this environment, pip install flask, paramiko, and flask-wtf.
 
 Still within this environment, change directory to the location of the downloaded "flask-ui" folder.
 
-With VS Code, open and edit the ~ssh.py~ utils.py file to add a path for the global variables IP_ADDRESS to reflect the IP address of the server machine,  ~"FILE_FOLDER" and "USER_FOLDER"~ *update for final release* .
+With VS Code, open and edit the utils.py file to add a path for the global variables IP_ADDRESS to reflect the IP address of the server machine. If necessary, change the port variable in get_sftp() to the port the server machine is using.
+
+In ui.py, edit app.config['SECRET_KEY'] to be a secure string of your choice, edit DOWNLOAD_FOLDER to be the absolute file path that is desired for files to download to from the server. 
 
 Via CLI, run the command "python ui.py" (remove quotations)
 
