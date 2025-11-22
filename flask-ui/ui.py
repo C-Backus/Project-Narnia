@@ -2,7 +2,6 @@ import os, paramiko, stat
 from flask import Flask, render_template, request, redirect, url_for, Response, session
 from utils import get_files_and_folders, get_sftp
 from forms import LoginForm
-from werkzeug.security import generate_password_hash, check_password_hash
 
 
 app = Flask(__name__)
@@ -242,7 +241,6 @@ def rename_item():
     return redirect(url_for('index', path=current_path))
 
 
-'''doesnt delete folders with contents'''
 #delete file or folder
 @app.route('/delete_item', methods=['POST'])
 def delete_item():
