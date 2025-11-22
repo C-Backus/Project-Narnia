@@ -33,7 +33,7 @@ Create a conda environment as Python version 3.10.18 and activate.
 
 Within this environment, pip install flask, paramiko, and flask-wtf.
 
-Still within this environment, change directory to the location of the downloaded "flask-ui" folder.
+Still within this environment, change directory the downloaded "flask-ui" folder.
 
 With VS Code, open and edit the utils.py file to add a path for the global variables IP_ADDRESS to reflect the IP address of the server machine. If necessary, change the port variable in get_sftp() to the port the server machine is using.
 
