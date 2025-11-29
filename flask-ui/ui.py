@@ -5,7 +5,7 @@ from forms import LoginForm
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = ''           #allows accss to login page ((needs to be more secure later))
+app.config['SECRET_KEY'] = ''           #allows accss to login page
 
 ROOT_FILE = '/upload'   #every user has an upload file, separated by ssh login
 DOWNLOAD_FOLDER = ''   #route to desired folder for downloads
