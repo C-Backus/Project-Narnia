@@ -17,7 +17,131 @@ Due to the nature of the system as whole, it is up to the end-user to supply the
 
 ### On server machine
 
-*Insert Linux server requirements here*
+Download Ubuntu 24.04 LTS from Ubuntu’s official site onto a USB driver from any computer. https://ubuntu.com/download/desktop
+
+Download Rufus onto your computer (Not the USB) In order to make a bootable drive for Ubuntu. https://rufus.ie/en/
+
+Make sure you plug in your USB to your computer and launch Rufus. 
+
+In Rufus select your USB drive then click select. This will open the file selector and click on your Ubuntu installation. At the bottom of the window click OK on all dialog boxes and wait for Rufus to complete. This can take around 5 minutes for the USB to be bootable. 
+
+Restart your computer with USB plugged in and boot to the USB 
+
+When onto the USB from the boot menu, click the UEFI boot if possible. 
+
+There will be some accessibility options to go through based on your preferences. 
+
+The next option you’ll see is Install Ubuntu or Try Ubuntu. Click Install Ubuntu. This screen only appears if you directly installed Ubuntu.
+
+The next screen will be showing Interactive Installation and Automated Installation. Click Interactive Installation then click next.  
+
+Next will be Default Selection or Extended Selections. Click Extended Selections. 
+
+Next screen will be priority software will be recommended. Click all the boxes then click next
+
+The next screen will be how do you want to install Ubuntu. There should be three options. Install Ubuntu alongside them, Erase disk and install Ubuntu, and Manual installation. Choose the option that best works for you.
+
+The next screen will have you create a user and a few other accessibility options.
+
+The final screen will be a breakdown of all the options you chose before on how you are installing Ubuntu. Click next and wait for the installer to finish
+
+Reboot and you should be able to access the desktop.
+
+From your Ubuntu desktop find the application for the Terminal. This is where we will be working from now on.
+
+We are going to install openssh-server package. In the terminal type:
+
+sudo apt update
+
+sudo apt install openssh-server -y
+
+Next we are going to create a SFTP directory to store the user data:
+
+sudo mkdir /sftpDataHome
+
+sudo chmod 701 /sftpDataHome
+
+Next you are going to create a user and a group for our SFTP users. Type:
+
+sudo groupadd sftpGroup
+
+The next will create a user and add them to the group. This can be done multiple times for more users.
+
+sudo useradd -g sftpGroup -d /sftpDataHome/username/DataDirectory -s /urs/sbin/nologin username
+
+change the user’s password
+
+sudo passwd username
+
+Create directory and home for the user:
+
+sudo mkdir -p /sftpDataHome/username/DataDirectory
+
+sudo chown -R root:sftpGroup /sftpDataHome/username
+
+sudo chown -R username:sftpGroup /sftpDataHome/username/DataDirectory
+
+Modify the ssh config file to set up you sftp group
+
+Sudo nano /etc/ssh/sshd_config
+
+Comment out:
+
+subsystem sftp /usr/lib/openssh/sftp-server
+
+add the following to the bottom of the file:
+
+subsystem sftp internal-sftp
+
+Match Group sftpGroup
+
+ChrootDirectory /sftpDataHome/%u
+
+kbdInteractiveAuthentication yes
+
+PasswordAuthentication yes
+
+X11Forwarding no
+
+AllowTcpForwarding no
+
+AllowAgentForwarding no
+
+PermitTunnel no
+
+FoceCommand internal-sftp -d /DataDirectory
+
+press Ctrl+O then ENTER to save, then Ctrl+x to exit
+
+Go to the Ubuntu Read Me for non-requirement set up
+
+### Repeated User Creation and Deletion on Server Administrator
+
+Repeated code in order
+
+Sudo useradd -g sftpGroup -d /sftpDataHome/username/DataDirectory -s /usr/bin/nologin
+
+sudo passwd username
+
+sudo mkdir -p /sftpDataHome/username/DataDirectory
+
+sudo chown -R root:sftpGroup /sftpDataHome/username
+
+sudo chown -R username:sftpGroup/sftpDataHome/username/DataDirectory
+
+### Delete a user
+
+Keep information
+
+sudo deluser username
+
+Delete user and data directory
+
+sudo deluser --remove-home username
+
+Delete user and all their files
+
+sudo deluser --remove-all-files username
 
 ### On access machine(s)
 
@@ -54,6 +178,4 @@ If shutting down system is desired, press Ctrl+c in the CLI window that the prog
 The intent of this software is to make this a modular program that will execute on any machine with minimal changes in the code.
 
 Each user and password must be created on the server. This will allow the access machine(s) to connect to the server with the ssh function and properly display the logging in user's folder architecture.
-
-Variables are snake_case, constants are SCREAMING_SNAKE_CASE
 
