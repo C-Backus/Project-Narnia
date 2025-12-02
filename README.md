@@ -57,61 +57,61 @@ We are going to install openssh-server package. In the terminal type:
 
 Next we are going to create a SFTP directory to store the user data:
 
-sudo mkdir /sftpDataHome
+    sudo mkdir /sftpDataHome
 
-sudo chmod 701 /sftpDataHome
+    sudo chmod 701 /sftpDataHome
 
 Next you are going to create a user and a group for our SFTP users. Type:
 
-sudo groupadd sftpGroup
+    sudo groupadd sftpGroup
 
 The next will create a user and add them to the group. This can be done multiple times for more users.
 
-sudo useradd -g sftpGroup -d /sftpDataHome/username/DataDirectory -s /urs/sbin/nologin username
+    sudo useradd -g sftpGroup -d /sftpDataHome/username/DataDirectory -s /urs/sbin/nologin username
 
 change the user’s password
 
-sudo passwd username
+    sudo passwd username
 
 Create directory and home for the user:
 
-sudo mkdir -p /sftpDataHome/username/DataDirectory
+    sudo mkdir -p /sftpDataHome/username/DataDirectory
 
-sudo chown -R root:sftpGroup /sftpDataHome/username
+    sudo chown -R root:sftpGroup /sftpDataHome/username
 
-sudo chown -R username:sftpGroup /sftpDataHome/username/DataDirectory
+    sudo chown -R username:sftpGroup /sftpDataHome/username/DataDirectory
 
 Modify the ssh config file to set up you sftp group
 
-Sudo nano /etc/ssh/sshd_config
+    Sudo nano /etc/ssh/sshd_config
 
 Comment out:
 
-subsystem sftp /usr/lib/openssh/sftp-server
+    subsystem sftp /usr/lib/openssh/sftp-server
 
 add the following to the bottom of the file:
 
-subsystem sftp internal-sftp
+    subsystem sftp internal-sftp
 
-Match Group sftpGroup
+    Match Group sftpGroup
 
-ChrootDirectory /sftpDataHome/%u
+    ChrootDirectory /sftpDataHome/%u
 
-kbdInteractiveAuthentication yes
+    kbdInteractiveAuthentication yes
 
-PasswordAuthentication yes
+    PasswordAuthentication yes
 
-X11Forwarding no
+    X11Forwarding no
 
-AllowTcpForwarding no
+    AllowTcpForwarding no
 
-AllowAgentForwarding no
+    AllowAgentForwarding no
 
-PermitTunnel no
+    PermitTunnel no
 
-FoceCommand internal-sftp -d /DataDirectory
+    FoceCommand internal-sftp -d /DataDirectory
 
-press Ctrl+O then ENTER to save, then Ctrl+x to exit
+    press Ctrl+O then ENTER to save, then Ctrl+x to exit
 
 Go to the Ubuntu Read Me for non-requirement set up
 
@@ -119,29 +119,29 @@ Go to the Ubuntu Read Me for non-requirement set up
 
 Repeated code in order
 
-Sudo useradd -g sftpGroup -d /sftpDataHome/username/DataDirectory -s /usr/bin/nologin
+    sudo useradd -g sftpGroup -d /sftpDataHome/username/DataDirectory -s /usr/bin/nologin
 
-sudo passwd username
+    sudo passwd username
 
-sudo mkdir -p /sftpDataHome/username/DataDirectory
+    sudo mkdir -p /sftpDataHome/username/DataDirectory
 
-sudo chown -R root:sftpGroup /sftpDataHome/username
+    sudo chown -R root:sftpGroup /sftpDataHome/username
 
-sudo chown -R username:sftpGroup/sftpDataHome/username/DataDirectory
+    sudo chown -R username:sftpGroup/sftpDataHome/username/DataDirectory
 
 ### Delete a user
 
 Keep information
 
-sudo deluser username
+    sudo deluser username
 
 Delete user and data directory
 
-sudo deluser --remove-home username
+    sudo deluser --remove-home username
 
 Delete user and all their files
 
-sudo deluser --remove-all-files username
+    sudo deluser --remove-all-files username
 
 ### On access machine(s)
 
@@ -163,7 +163,9 @@ With VS Code, open and edit the utils.py file to add a path for the global varia
 
 In ui.py, edit app.config['SECRET_KEY'] to be a secure string of your choice, edit DOWNLOAD_FOLDER to be the absolute file path that is desired for files to download to from the server. 
 
-Via CLI, run the command "python ui.py" (remove quotations)
+Via CLI, run the command 
+
+    python ui.py
 
 Access the link generated in the command window.
 
