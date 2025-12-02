@@ -12,6 +12,51 @@ Free: VS Code
 ## Requirements
 Due to the nature of the system as whole, it is up to the end-user to supply their own server hardware and access machines. There are no baseline specifications to run this software, however, it is reccomended that the server hardware be SSD storage devices and include a minimum 8 GB of RAM, and the access machines should be robust enough to execute moderate intensity programs. 
 
+## Code Convention
+
+This software system gives the means to access a Linux Ubuntu server machine through another machine running a Python Script. This Python script leverages the Flask framework to work off of a web-UI for user functionality and then connects to the server machine via SSH/SFTP protocols to execute whatever functionality the user is requesting.
+
+The basic structure of the front end code in Python is to login and capture username and password during initial login, then every function will check if the user is logged in (in session), upon success, the function will execute the desired functionality as indicated by the user’s interaction with the html page. Executing the desired functionality is done by opening an SSH/SFTP connection with the server machine, running whatever command is needed, then closing the SSH/SFTP connection.
+
+## Included Files
+
+ui.py: Main Python executable script. Contains all user-functionality functions, depends on utils.py and forms.py
+
+utils.py: Contains the get_sftp function and get_files_and_folders function. get_sftp establishes the SSH/SFTP connection to the server machine using the username and password passed to it from ui.py on initial user login. get_files_and_folders returns all files and folders in the current directory the user is in and returns them in separate lists to be displayed on the logged-in user’s page.
+
+forms.py: Contains the single LoginForm class. This is filled with data from the login.html file as a user logs in on the web-UI. Then this data is accessed by the login function in ui.py to be sent to get_sftp.
+
+base.html: Contains general formatting of the web-UI as seen by users.
+
+index.html: Contains all user functionality of the web-UI. Depends on base.html.
+
+login.html: This is the login page that is first shown upon initial running of program. Will also show after a user logs out. Depends on base.html.
+
+## Known Issues and Undeveloped/Underdeveloped Features
+•	The delete_item function only deletes empty directories currently. 
+    
+   o	Need to write a function that deletes all items within directory and checks for more items to delete until directory is empty, then deletes directory itself. This might be best suited to a recursive function. Currently, users must delete everything within a folder before deleting the empty folder itself.
+
+•	User creation can only be done on the server machine.
+    
+   o	It would be very useful to be able to create users automatically from the access machine. This involves accessing the root user of the server machine to do so, which, from a security perspective, is less than ideal.
+
+•	SSH connections are authenticated via username and password instead of SSH Pair keys. 
+
+   o	Yes, username and password authentication is technically less secure than SSH key authentication. This is not a problem in terms of scope of this system as a home network device. Additionally, the idea of using SSH key authentication for multiple users means storing those SSH keys somewhere in a dictionary or dictionary-like data structure. This was not feasible in our development timeline.
+
+•	Secondary Layer of encryption on data transfer
+
+   o	Ubuntu 24.04 LTS already comes with standard encryption that can be enabled through the UFW (Uncomplicated Firewall). In the future, we would like to add another layer of encryption to the data transfer itself instead of just the data on the server. 
+
+•	Front end Admin
+
+   o	A front end admin at higher level on the server so the other users can be remotely accessed by the admin user. 
+
+•	Accessibility options
+
+   o	Allowing the user to change the color of the website and color/size of the text via the UI instead of opening code files would be ideal. This is currently unsupported.  
+
 
 ## Installation Guide
 
