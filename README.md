@@ -35,27 +35,27 @@ login.html: This is the login page that is first shown upon initial running of p
 ## Known Issues and Undeveloped/Underdeveloped Features
 •	The delete_item function only deletes empty directories currently. 
     
-   o	Need to write a function that deletes all items within directory and checks for more items to delete until directory is empty, then deletes directory itself. This might be best suited to a recursive function. Currently, users must delete everything within a folder before deleting the empty folder itself.
+Need to write a function that deletes all items within directory and checks for more items to delete until directory is empty, then deletes directory itself. This might be best suited to a recursive function. Currently, users must delete everything within a folder before deleting the empty folder itself.
 
 •	User creation can only be done on the server machine.
     
-   o	It would be very useful to be able to create users automatically from the access machine. This involves accessing the root user of the server machine to do so, which, from a security perspective, is less than ideal.
+It would be very useful to be able to create users automatically from the access machine. This involves accessing the root user of the server machine to do so, which, from a security perspective, is less than ideal.
 
 •	SSH connections are authenticated via username and password instead of SSH Pair keys. 
 
-   o	Yes, username and password authentication is technically less secure than SSH key authentication. This is not a problem in terms of scope of this system as a home network device. Additionally, the idea of using SSH key authentication for multiple users means storing those SSH keys somewhere in a dictionary or dictionary-like data structure. This was not feasible in our development timeline.
+Yes, username and password authentication is technically less secure than SSH key authentication. This is not a problem in terms of scope of this system as a home network device. Additionally, the idea of using SSH key authentication for multiple users means storing those SSH keys somewhere in a dictionary or dictionary-like data structure. This was not feasible in our development timeline.
 
 •	Secondary Layer of encryption on data transfer
 
-   o	Ubuntu 24.04 LTS already comes with standard encryption that can be enabled through the UFW (Uncomplicated Firewall). In the future, we would like to add another layer of encryption to the data transfer itself instead of just the data on the server. 
+Ubuntu 24.04 LTS already comes with standard encryption that can be enabled through the UFW (Uncomplicated Firewall). In the future, we would like to add another layer of encryption to the data transfer itself instead of just the data on the server. 
 
 •	Front end Admin
 
-   o	A front end admin at higher level on the server so the other users can be remotely accessed by the admin user. 
+A front end admin at higher level on the server so the other users can be remotely accessed by the admin user. 
 
 •	Accessibility options
 
-   o	Allowing the user to change the color of the website and color/size of the text via the UI instead of opening code files would be ideal. This is currently unsupported.  
+Allowing the user to change the color of the website and color/size of the text via the UI instead of opening code files would be ideal. This is currently unsupported.  
 
 
 ## Installation Guide
