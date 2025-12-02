@@ -51,9 +51,9 @@ From your Ubuntu desktop find the application for the Terminal. This is where we
 
 We are going to install openssh-server package. In the terminal type:
 
-sudo apt update
+    sudo apt update
 
-sudo apt install openssh-server -y
+    sudo apt install openssh-server -y
 
 Next we are going to create a SFTP directory to store the user data:
 
